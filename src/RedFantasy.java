@@ -1,5 +1,5 @@
+import java.util.Arrays;
 import java.util.Random;
-
 /**
  * RedFantasy
  */
@@ -26,16 +26,24 @@ public class RedFantasy {
     
     public RedFantasy() {
         // init player/cpu monster array
-        for (int i = 0; i < this.playerMonsters.length; i++) {
-            this.playerMonsters[i] = -1;
-            this.cpuMonsters[i] = -1;
-        }
+        // for (int i = 0; i < this.playerMonsters.length; i++) {
+        //     this.playerMonsters[i] = -1;
+        //     this.cpuMonsters[i] = -1;
+        // }
+        Arrays.setAll(this.playerMonsters, value -> -1);
+        Arrays.setAll(this.cpuMonsters, value -> -1);
+
+
+
         this.playerHistory[0] = this.playerHp;
         this.cpuHistory[0] = this.cpuHp;
-        for (int i = 0; i < this.playerHistory.length; i++) {
-            this.playerHistory[i] = -9999;
-            this.cpuHistory[i] = -9999;
-        }
+        // for (int i = 0; i < this.playerHistory.length; i++) {
+        //     this.playerHistory[i] = -9999;
+        //     this.cpuHistory[i] = -9999;
+        // }
+        Arrays.setAll(this.playerHistory, value -> -9999);
+        Arrays.setAll(this.cpuHistory, value -> -9999);
+
     }
 
     public void startPhase() {

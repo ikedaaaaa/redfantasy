@@ -3,7 +3,7 @@
     "java.home": "c://byod//java1.8_152",
     "java.jdt.ls.vmargs": "-Dfile.encoding=UTF-8",
     "editor.renderWhitespace": "boundary",
-    "workbench.colorTheme": "Default Light+",
+    "workbench.colorTheme": "Visual Studio 2017 Dark - C++",
     "files.exclude": {
         "bin/": true
     },
