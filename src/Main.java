@@ -22,7 +22,7 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
-		// System.out.println("Player History:");
+		System.out.println("Player History:");
 		// for (int i = 0; i < rf.getPlayerHistory().length && rf.getPlayerHistory()[i] != -9999; i++) {
 		// 	System.out.print(rf.getPlayerHistory()[i] + "\t");
 		// }
@@ -40,7 +40,8 @@ public class Main {
 		Arrays.stream(cpuHistory)
 		.filter(value -> value != -9999)
 		.forEach(value -> System.out.print(value + "\t"));
-	
+		
+		System.out.println("");
 	}
 
     public static void setMonsters() {

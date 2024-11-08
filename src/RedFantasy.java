@@ -157,21 +157,31 @@ public class RedFantasy {
 
         System.out.println("--------------------");
         System.out.print("Player Monster Pointの合計:");
-        int p3 = this.playerBonusPoint;
-        for(int i = 0; i < this.playerMonsters.length; i++){
-            if(this.playerMonsters[i] != -1){
-                p3 = p3 + this.playerMonstersPoint[i];
-            }
-        }
+        // int p3 = this.playerBonusPoint;
+        // for(int i = 0; i < this.playerMonsters.length; i++){
+        //     if(this.playerMonsters[i] != -1){
+        //         p3 = p3 + this.playerMonstersPoint[i];
+        //     }
+        // }
+        int p3 = this.playerBonusPoint + 
+            IntStream.range(0, this.playerMonsters.length)
+                 .filter(index -> this.playerMonsters[index] != -1)
+                 .map(index -> this.playerMonstersPoint[index])
+                 .sum();
         System.out.println(p3);
 
         System.out.print("CPU Monster Pointの合計:");
-        int p4 = this.cpuBonusPoint;
-        for(int i = 0; i < this.cpuMonsters.length; i++){
-            if(this.cpuMonsters[i] != -1){
-                p4 = p4 + this.cpuMonstersPoint[i];
-            }
-        }
+        // int p4 = this.cpuBonusPoint;
+        // for(int i = 0; i < this.cpuMonsters.length; i++){
+        //     if(this.cpuMonsters[i] != -1){
+        //         p4 = p4 + this.cpuMonstersPoint[i];
+        //     }
+        // }
+        int p4 = this.cpuBonusPoint + 
+        IntStream.range(0, this.cpuMonsters.length)
+             .filter(index -> this.cpuMonsters[index] != -1)
+             .map(index -> this.cpuMonstersPoint[index])
+             .sum();
         System.out.println(p4);
         System.out.println("--------------------");
 
@@ -190,18 +200,28 @@ public class RedFantasy {
         
         System.out.println("--------------------");
         // 対戦結果の記録
-        for(int i = 0;i < this.playerHistory.length; i++){
-            if(this.playerHistory[i] == -9999){
-                this.playerHistory[i] = this.playerHp;
-                break;
-            }
-        }
-        for(int i = 0;i < this.cpuHistory.length; i++){
-            if(this.cpuHistory[i] == -9999){
-                this.cpuHistory[i] = this.cpuHp;
-                break;
-            }
-        }
+        // for(int i = 0;i < this.playerHistory.length; i++){
+        //     if(this.playerHistory[i] == -9999){
+        //         this.playerHistory[i] = this.playerHp;
+        //         break;
+        //     }
+        // }
+        IntStream.range(0, this.playerHistory.length)
+            .filter(index -> this.playerHistory[index] == -9999)
+            .findFirst()
+            .ifPresent(index -> this.playerHistory[index] = this.playerHp);
+
+        // for(int i = 0;i < this.cpuHistory.length; i++){
+        //     if(this.cpuHistory[i] == -9999){
+        //         this.cpuHistory[i] = this.cpuHp;
+        //         break;
+        //     }
+        // }
+        IntStream.range(0, this.cpuHistory.length)
+            .filter(index -> this.cpuHistory[index] == -9999)
+            .findFirst()
+            .ifPresent(index -> this.cpuHistory[index] = this.cpuHp);
+
     }
     public int[] getPlayerHistory(){
         return this.playerHistory;
