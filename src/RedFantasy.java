@@ -32,56 +32,27 @@ public class RedFantasy {
         this.setMonsters(this.player);
         System.out.println("");
         this.setMonsters(this.cpu);
-
         System.out.println("\n--------------------");
         System.out.println("Battle!");
         int playerDice = this.rnd.nextInt(6)+1; //1~6のサイコロを振る
         int cpuDice = this.rnd.nextInt(6)+1; //1~6のサイコロを振る
         this.diceProcessing(playerDice,this.player);
         this.diceProcessing(cpuDice,this.cpu);
-
         System.out.println("--------------------");
-        System.out.print("Player Monster Pointの合計:");
-        int playerMonterTotalPoint = this.player.bonusPoint + 
-            IntStream.range(0, this.player.monsters.length)
-                 .filter(index -> this.player.monsters[index] != -1)
-                 .map(index -> this.player.monstersPoint[index])
-                 .sum();
-        System.out.println(playerMonterTotalPoint);
-
-        System.out.print("CPU Monster Pointの合計:");
-        int cpuMonterTotalPoint = this.cpu.bonusPoint + 
-        IntStream.range(0, this.cpu.monsters.length)
-             .filter(index -> this.cpu.monsters[index] != -1)
-             .map(index -> this.cpu.monstersPoint[index])
-             .sum();
-        System.out.println(cpuMonterTotalPoint);
+        int playerMonterTotalPoint = monsterTotalPointCalculation(this.player);
+        int cpuMonterTotalPoint = monsterTotalPointCalculation(this.cpu);
         System.out.println("--------------------");
 
-        if(playerMonterTotalPoint > cpuMonterTotalPoint){
-            System.out.println("Player Win!");
-            this.cpu.hp = this.cpu.hp - (playerMonterTotalPoint - cpuMonterTotalPoint);
-        }else if(cpuMonterTotalPoint > playerMonterTotalPoint){
-            System.out.println("CPU Win!");
-            this.player.hp = this.player.hp - (cpuMonterTotalPoint - playerMonterTotalPoint);
-        }else if(playerMonterTotalPoint == cpuMonterTotalPoint){
-            System.out.println("Draw!");
-        }
+        String judgmentWord = judgment(playerMonterTotalPoint,cpuMonterTotalPoint);
+        System.out.println(judgmentWord);
 
         System.out.println("Player HP is " + this.player.hp);
         System.out.println("CPU HP is " + this.cpu.hp);
         
         System.out.println("--------------------");
         // 対戦結果の記録
-        IntStream.range(0, this.player.history.length)
-            .filter(index -> this.player.history[index] == -9999)
-            .findFirst()
-            .ifPresent(index -> this.player.history[index] = this.player.hp);
-        IntStream.range(0, this.cpu.history.length)
-            .filter(index -> this.cpu.history[index] == -9999)
-            .findFirst()
-            .ifPresent(index -> this.cpu.history[index] = this.cpu.hp);
-
+        this.writeHistory(this.player);
+        this.writeHistory(this.cpu);
     }
     public void drawMonsters(int drawSize, Status user){
         System.out.println(user.name + " Draw " + drawSize + " monsters");
@@ -117,5 +88,35 @@ public class RedFantasy {
             }
             default -> user.bonusPoint = dice;
         }
+    }
+
+    public int monsterTotalPointCalculation(Status user){
+        int monterTotalPoint = user.bonusPoint + 
+                IntStream.range(0, user.monsters.length)
+                    .filter(index -> user.monsters[index] != -1)
+                    .map(index -> user.monstersPoint[index])
+                    .sum();
+        System.out.print(user.name + " Monster Pointの合計:");
+        System.out.println(monterTotalPoint);
+        return monterTotalPoint;
+    }
+
+    public String judgment(int playerMonterTotalPoint,int cpuMonterTotalPoint){
+        int pointDiff = playerMonterTotalPoint - cpuMonterTotalPoint;
+        if(pointDiff > 0){
+            this.cpu.hp = this.cpu.hp - (pointDiff);
+            return "Player Win!";
+        }else if(pointDiff < 0){
+            this.player.hp = this.player.hp - (pointDiff * -1);
+            return "CPU Win!";
+        }else{
+            return "Draw!";
+        }
+    }
+    public void writeHistory(Status user){
+        IntStream.range(0, user.history.length)
+            .filter(index -> user.history[index] == -9999)
+            .findFirst()
+            .ifPresent(index -> user.history[index] = user.hp);
     }
 }
