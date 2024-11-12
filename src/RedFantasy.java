@@ -14,27 +14,19 @@ public class RedFantasy {
     }
 
     public void startPhase() {
-
+        player.resetStatus();
+        cpu.resetStatus();
+        
         //Draw player's monster card
         // playerMonsters.length -3 ~ playerMonsters.length までのランダムなint型の数値をp1に代入する
         int playerDrawSize = this.rnd.nextInt(this.player.monsters.length - 2) + 3;
-        System.out.println("Player Draw " + playerDrawSize + " monsters");
-        IntStream.range(0,playerDrawSize)
-            .forEach(index -> {
-                int monsterNumber = this.rnd.nextInt(this.ms.monsters.size());
-                this.player.monsters[index] = monsterNumber;
-                this.player.monstersPoint[index] = this.ms.monsters.get(monsterNumber).monsterPoint;
-            });
 
         ////Draw cpu's monster card
         int cpuDrawSize = this.rnd.nextInt(this.cpu.monsters.length -2 ) + 3;
-        System.out.println("CPU Draw " + cpuDrawSize + " monsters");
-        IntStream.range(0,cpuDrawSize)
-            .forEach(index -> {
-            int monsterNumber = this.rnd.nextInt(this.ms.monsters.size());
-            this.cpu.monsters[index] = monsterNumber;
-            this.cpu.monstersPoint[index] = this.ms.monsters.get(monsterNumber).monsterPoint;
-        });
+
+        this.drawMonsters("player",playerDrawSize,this.player);
+        this.drawMonsters("cpu",cpuDrawSize,this.cpu);
+
 
         System.out.println("--------------------");
         System.out.print("Player Monsters List:");
@@ -123,5 +115,14 @@ public class RedFantasy {
             .findFirst()
             .ifPresent(index -> this.cpu.history[index] = this.cpu.hp);
 
+    }
+    public void drawMonsters(String name,int drawSize,Status user){
+        System.out.println(name + " Draw " + drawSize + " monsters");
+        IntStream.range(0,drawSize)
+            .forEach(index -> {
+                int monsterNumber = this.rnd.nextInt(this.ms.monsters.size());
+                user.monsters[index] = monsterNumber;
+                user.monstersPoint[index] = this.ms.monsters.get(monsterNumber).monsterPoint;
+            });
     }
 }

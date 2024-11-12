@@ -16,4 +16,7 @@ import java.util.Arrays;
         this.history[0] = this.hp;
         Arrays.setAll(this.history, value -> -9999);
     }
+    public void resetStatus(){
+        Arrays.setAll(this.monsters, value -> -1);
+    }
  }
