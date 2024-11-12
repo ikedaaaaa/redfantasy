@@ -4,6 +4,9 @@ import java.util.stream.IntStream;
  * RedFantasy
  */
 public class RedFantasy {
+    private static final int MIN_MONSTER_DRAW = 3;  // モンスターカードの最小枚数
+    private static final int MONSTER_DECK_OFFSET = 2;  // モンスターカードのデッキサイズ調整値
+
     Monsters ms = new Monsters();
 
     Random rnd = new Random();
@@ -14,30 +17,77 @@ public class RedFantasy {
     }
 
     public void startPhase() {
+        this.resetStatuses();
+        this.drawMonstersForBothPlayers();
+        this.displayMonsters();
+
+        int playerDice = rollDice();
+        int cpuDice = rollDice();
+
+        System.out.println("\n--------------------");
+        this.battleSummary(playerDice,cpuDice);
+ 
+        this.recordBattleHistory();
+    }
+
+    private void resetStatuses(){
+        /*
+         * プレイヤーとCPUのステータスをリセットする．
+         * ゲーム開始時または各ターン開始時に
+         * ステータスが初期状態に戻される．
+         */
         player.resetStatus();
         cpu.resetStatus();
-        
-        //Draw player's monster card
-        // playerMonsters.length -3 ~ playerMonsters.length までのランダムなint型の数値をp1に代入する
-        int playerDrawSize = this.rnd.nextInt(this.player.monsters.length - 2) + 3;
+    }
 
-        ////Draw cpu's monster card
-        int cpuDrawSize = this.rnd.nextInt(this.cpu.monsters.length -2 ) + 3;
+    private void drawMonstersForBothPlayers(){
+        int playerDrawSize = getRandomMonsterDrawSize(player);
+        int cpuDrawSize = getRandomMonsterDrawSize(cpu);
 
-        this.drawMonsters(playerDrawSize,this.player);
-        this.drawMonsters(cpuDrawSize,this.cpu);
+        this.drawMonsters(playerDrawSize, this.player);
+        this.drawMonsters(cpuDrawSize, this.cpu);
+    }
+    private int getRandomMonsterDrawSize(Status user) {
+        return this.rnd.nextInt(user.monsters.length - MONSTER_DECK_OFFSET) + MIN_MONSTER_DRAW;
+    }
 
-
+    private void drawMonsters(int drawSize, Status user){
+        System.out.println(user.name + " Draw " + drawSize + " monsters");
+        IntStream.range(0,drawSize)
+            .forEach(index -> {
+                int monsterNumber = this.rnd.nextInt(this.ms.monsters.size());
+                user.monsters[index] = monsterNumber;
+                user.monstersPoint[index] = this.ms.monsters.get(monsterNumber).monsterPoint;
+            });
+    }
+    
+    private void displayMonsters() {
         System.out.println("--------------------");
-        this.setMonsters(this.player);
+        setMonsters(this.player);
         System.out.println("");
-        this.setMonsters(this.cpu);
-        System.out.println("\n--------------------");
+        setMonsters(this.cpu);
+    }
+
+
+    private void setMonsters(Status user){
+        System.out.print(user.name + " Monsters List:");
+        IntStream.range(0,user.monsters.length)
+            .filter(index -> user.monsters[index] != -1)
+            .forEach(index ->  System.out.print(this.ms.monsters.get(user.monsters[index]).monsterName + " "));
+    }
+
+    private int rollDice() {
+        return rnd.nextInt(6) + 1;
+    }
+
+    private  void battleSummary(int playerDice,int cpuDice){
         System.out.println("Battle!");
-        int playerDice = this.rnd.nextInt(6)+1; //1~6のサイコロを振る
-        int cpuDice = this.rnd.nextInt(6)+1; //1~6のサイコロを振る
+        // int playerDice = this.rnd.nextInt(6)+1; //1~6のサイコロを振る
+        // int cpuDice = this.rnd.nextInt(6)+1; //1~6のサイコロを振る
+
         this.diceProcessing(playerDice,this.player);
         this.diceProcessing(cpuDice,this.cpu);
+
         System.out.println("--------------------");
         int playerMonterTotalPoint = monsterTotalPointCalculation(this.player);
         int cpuMonterTotalPoint = monsterTotalPointCalculation(this.cpu);
@@ -50,28 +100,9 @@ public class RedFantasy {
         System.out.println("CPU HP is " + this.cpu.hp);
         
         System.out.println("--------------------");
-        // 対戦結果の記録
-        this.writeHistory(this.player);
-        this.writeHistory(this.cpu);
-    }
-    public void drawMonsters(int drawSize, Status user){
-        System.out.println(user.name + " Draw " + drawSize + " monsters");
-        IntStream.range(0,drawSize)
-            .forEach(index -> {
-                int monsterNumber = this.rnd.nextInt(this.ms.monsters.size());
-                user.monsters[index] = monsterNumber;
-                user.monstersPoint[index] = this.ms.monsters.get(monsterNumber).monsterPoint;
-            });
     }
 
-    public void setMonsters(Status user){
-        System.out.print(user.name + " Monsters List:");
-        IntStream.range(0,user.monsters.length)
-            .filter(index -> user.monsters[index] != -1)
-            .forEach(index ->  System.out.print(this.ms.monsters.get(user.monsters[index]).monsterName + " "));
-    }
-
-    public void diceProcessing(int dice, Status user){
+    private void diceProcessing(int dice, Status user){
         System.out.println(user.name + "'s Dice'：" + dice);
         switch (dice) {
             case 1 -> {
@@ -90,7 +121,7 @@ public class RedFantasy {
         }
     }
 
-    public int monsterTotalPointCalculation(Status user){
+    private int monsterTotalPointCalculation(Status user){
         int monterTotalPoint = user.bonusPoint + 
                 IntStream.range(0, user.monsters.length)
                     .filter(index -> user.monsters[index] != -1)
@@ -101,7 +132,7 @@ public class RedFantasy {
         return monterTotalPoint;
     }
 
-    public String judgment(int playerMonterTotalPoint,int cpuMonterTotalPoint){
+    private String judgment(int playerMonterTotalPoint,int cpuMonterTotalPoint){
         int pointDiff = playerMonterTotalPoint - cpuMonterTotalPoint;
         if(pointDiff > 0){
             this.cpu.hp = this.cpu.hp - (pointDiff);
@@ -113,7 +144,12 @@ public class RedFantasy {
             return "Draw!";
         }
     }
-    public void writeHistory(Status user){
+
+    private void recordBattleHistory() {
+        this.writeHistory(this.player);
+        this.writeHistory(this.cpu);
+    }
+    private void writeHistory(Status user){
         IntStream.range(0, user.history.length)
             .filter(index -> user.history[index] == -9999)
             .findFirst()

@@ -20,5 +20,6 @@ import java.util.Arrays;
     }
     public void resetStatus(){
         Arrays.setAll(this.monsters, value -> -1);
+        this.bonusPoint = 0;
     }
  }
