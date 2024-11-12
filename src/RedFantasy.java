@@ -82,9 +82,6 @@ public class RedFantasy {
 
     private  void battleSummary(int playerDice,int cpuDice){
         System.out.println("Battle!");
-        // int playerDice = this.rnd.nextInt(6)+1; //1~6のサイコロを振る
-        // int cpuDice = this.rnd.nextInt(6)+1; //1~6のサイコロを振る
-
         this.diceProcessing(playerDice,this.player);
         this.diceProcessing(cpuDice,this.cpu);
 
