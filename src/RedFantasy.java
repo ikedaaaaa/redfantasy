@@ -124,18 +124,4 @@ public class RedFantasy {
             .ifPresent(index -> this.cpu.history[index] = this.cpu.hp);
 
     }
-    public int[] getPlayerHistory(){
-        return this.player.history;
-    }
-    public int[] getCpuHistory(){
-        return this.cpu.history;
-    }
-
-    public int getPlayerHp(){
-        return this.player.hp; 
-    }
-
-    public int getCpuHp(){
-        return this.cpu.hp;
-    }
 }

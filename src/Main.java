@@ -4,13 +4,13 @@ public class Main {
 	public static void main(String[] args) {
 		while (true) {
 			try {
-				if (rf.getPlayerHp() > 0 && rf.getCpuHp() > 0) {
+				if (rf.player.hp > 0 && rf.cpu.hp > 0) {
 					Thread.sleep(30);
 					rf.startPhase();
-				} else if (rf.getPlayerHp() <= 0) {
+				} else if (rf.player.hp <= 0) {
 					System.out.println("Playerは死んでしまった");
 					break;
-				} else if (rf.getCpuHp() <= 0) {
+				} else if (rf.cpu.hp <= 0) {
 					System.out.println("CPUは死んでしまった");
 					break;
 				}
@@ -19,15 +19,13 @@ public class Main {
 			}
 		}
 		System.out.println("Player History:");
-		int[] playerHistory = rf.getPlayerHistory();
-		Arrays.stream(playerHistory)
+		Arrays.stream(rf.player.history)
 		.filter(value -> value != -9999)
 		.forEach(value -> System.out.print(value + "\t"));
 	
 
 		System.out.println("\nCPU History:");
-		int[] cpuHistory = rf.getCpuHistory();
-		Arrays.stream(cpuHistory)
+		Arrays.stream(rf.cpu.history)
 		.filter(value -> value != -9999)
 		.forEach(value -> System.out.print(value + "\t"));
 		
