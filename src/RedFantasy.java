@@ -5,8 +5,8 @@ import java.util.stream.IntStream;
  * RedFantasy
  */
 public class RedFantasy {
-    String[] monsters = new String[22];
-    int[] monstersPoint = new int[22];
+    // String[] monsters = new String[22];
+    // int[] monstersPoint = new int[22];
 
     int[] playerMonsters = new int[5];
     int[] playerMonstersPoint = new int[5];
@@ -18,6 +18,8 @@ public class RedFantasy {
     int cpuHp = 50;
     int playerBonusPoint = 0;        
     int cpuBonusPoint = 0;
+
+    Monsters ms = new Monsters();
 
     Random rnd = new Random();
 
@@ -60,9 +62,9 @@ public class RedFantasy {
         // }
         IntStream.range(0,p1)
             .forEach(index -> {
-                int m = this.rnd.nextInt(this.monsters.length);
+                int m = this.rnd.nextInt(this.ms.monsters.size());
                 this.playerMonsters[index] = m;
-                this.playerMonstersPoint[index] = this.monstersPoint[m];
+                this.playerMonstersPoint[index] = this.ms.monsters.get(m).monsterPoint;
             });
 
         ////Draw cpu's monster card
@@ -75,9 +77,9 @@ public class RedFantasy {
         // }
         IntStream.range(0,p2)
             .forEach(index -> {
-            int m = this.rnd.nextInt(this.monsters.length);
+            int m = this.rnd.nextInt(this.ms.monsters.size());
             this.cpuMonsters[index] = m;
-            this.cpuMonstersPoint[index] = this.monstersPoint[m];
+            this.cpuMonstersPoint[index] = this.ms.monsters.get(m).monsterPoint;
         });
 
         System.out.println("--------------------");
@@ -89,7 +91,7 @@ public class RedFantasy {
         // }
         IntStream.range(0,this.playerMonsters.length)
             .filter(index -> this.playerMonsters[index] != -1)
-            .forEach(index ->  System.out.print(this.monsters[this.playerMonsters[index]] + " "));
+            .forEach(index ->  System.out.print(this.ms.monsters.get(this.playerMonsters[index]).monsterName + " "));
 
         System.out.print("\nCPU Monsters List:");
         // for(int i = 0; i < this.cpuMonsters.length; i++){
@@ -99,7 +101,7 @@ public class RedFantasy {
         // }
         IntStream.range(0,this.cpuMonsters.length)
             .filter(index -> this.cpuMonsters[index] != -1)
-            .forEach(index ->  System.out.print(this.monsters[this.cpuMonsters[index]] + " "));
+            .forEach(index ->  System.out.print(this.ms.monsters.get(this.cpuMonsters[index]).monsterName + " "));
 
 
         System.out.println("\n--------------------");
@@ -238,12 +240,12 @@ public class RedFantasy {
         return this.cpuHp;
     }
 
-    public void setMonstersPoint(int[] tempMonstersPoint) {
-        this.monstersPoint = tempMonstersPoint;
-    }
+    // public void setMonstersPoint(int[] tempMonstersPoint) {
+    //     this.monstersPoint = tempMonstersPoint;
+    // }
 
-    public void setMonsterZukan(String[] tempMonsters) {
-        this.monsters = tempMonsters;
-    }
+    // public void setMonsterZukan(String[] tempMonsters) {
+    //     this.monsters = tempMonsters;
+    // }
 
 }
