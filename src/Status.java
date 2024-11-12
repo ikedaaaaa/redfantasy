@@ -9,7 +9,9 @@ import java.util.Arrays;
     public int hp;
     public int bonusPoint;
     public int[] history = new int[100];
-    public Status(){
+    public String name;
+    public Status(String name){
+        this.name = name;
         this.hp = 50;
         this.bonusPoint = 0;
         Arrays.setAll(this.monsters, value -> -1);

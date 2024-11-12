@@ -8,8 +8,8 @@ public class RedFantasy {
 
     Random rnd = new Random();
 
-    Status player = new Status();
-    Status cpu = new Status();
+    Status player = new Status("player");
+    Status cpu = new Status("cpu");
     public RedFantasy() {
     }
 
@@ -24,54 +24,21 @@ public class RedFantasy {
         ////Draw cpu's monster card
         int cpuDrawSize = this.rnd.nextInt(this.cpu.monsters.length -2 ) + 3;
 
-        this.drawMonsters("player",playerDrawSize,this.player);
-        this.drawMonsters("cpu",cpuDrawSize,this.cpu);
+        this.drawMonsters(playerDrawSize,this.player);
+        this.drawMonsters(cpuDrawSize,this.cpu);
 
 
         System.out.println("--------------------");
-        System.out.print("Player Monsters List:");
-        IntStream.range(0,this.player.monsters.length)
-            .filter(index -> this.player.monsters[index] != -1)
-            .forEach(index ->  System.out.print(this.ms.monsters.get(this.player.monsters[index]).monsterName + " "));
-
-        System.out.print("\nCPU Monsters List:");
-        IntStream.range(0,this.cpu.monsters.length)
-            .filter(index -> this.cpu.monsters[index] != -1)
-            .forEach(index ->  System.out.print(this.ms.monsters.get(this.cpu.monsters[index]).monsterName + " "));
-
+        this.setMonsters(this.player);
+        System.out.println("");
+        this.setMonsters(this.cpu);
 
         System.out.println("\n--------------------");
         System.out.println("Battle!");
         int playerDice = this.rnd.nextInt(6)+1; //1~6のサイコロを振る
-        System.out.println("Player's Dice'：" + playerDice);
-        if(playerDice == 1){
-            System.out.println("失敗！すべてのモンスターポイントが半分になる");
-            IntStream.range(0,this.player.monsters.length)
-                .filter(index -> this.player.monsters[index] != -1)
-                .forEach(index -> this.player.monstersPoint[index] = this.player.monstersPoint[index] / 2);
-        }else if(playerDice == 6){
-            System.out.println("Critical！すべてのモンスターポイントが倍になる");
-            IntStream.range(0,this.player.monsters.length)
-                .filter(index -> this.player.monsters[index] != -1)
-                .forEach(index -> this.player.monstersPoint[index] = this.player.monstersPoint[index] * 2);
-        }else{
-            this.player.bonusPoint = playerDice;
-        }
         int cpuDice = this.rnd.nextInt(6)+1; //1~6のサイコロを振る
-        System.out.println("CPU's Dice'：" + cpuDice);
-        if(cpuDice == 1){
-            System.out.println("失敗！すべてのモンスターポイントが半分になる");
-            IntStream.range(0,this.cpu.monsters.length)
-                .filter(index -> this.cpu.monsters[index] != -1)
-                .forEach(index -> this.cpu.monstersPoint[index] = this.cpu.monstersPoint[index] / 2);
-        }else if(cpuDice == 6){
-            System.out.println("Critical！すべてのモンスターポイントが倍になる");
-            IntStream.range(0,this.cpu.monsters.length)
-                .filter(index -> this.cpu.monsters[index] != -1)
-                .forEach(index -> this.cpu.monstersPoint[index] = this.cpu.monstersPoint[index] * 2);
-        }else{
-            this.cpu.bonusPoint = cpuDice;
-        }
+        this.diceProcessing(playerDice,this.player);
+        this.diceProcessing(cpuDice,this.cpu);
 
         System.out.println("--------------------");
         System.out.print("Player Monster Pointの合計:");
@@ -116,13 +83,39 @@ public class RedFantasy {
             .ifPresent(index -> this.cpu.history[index] = this.cpu.hp);
 
     }
-    public void drawMonsters(String name,int drawSize,Status user){
-        System.out.println(name + " Draw " + drawSize + " monsters");
+    public void drawMonsters(int drawSize, Status user){
+        System.out.println(user.name + " Draw " + drawSize + " monsters");
         IntStream.range(0,drawSize)
             .forEach(index -> {
                 int monsterNumber = this.rnd.nextInt(this.ms.monsters.size());
                 user.monsters[index] = monsterNumber;
                 user.monstersPoint[index] = this.ms.monsters.get(monsterNumber).monsterPoint;
             });
+    }
+
+    public void setMonsters(Status user){
+        System.out.print(user.name + " Monsters List:");
+        IntStream.range(0,user.monsters.length)
+            .filter(index -> user.monsters[index] != -1)
+            .forEach(index ->  System.out.print(this.ms.monsters.get(user.monsters[index]).monsterName + " "));
+    }
+
+    public void diceProcessing(int dice, Status user){
+        System.out.println(user.name + "'s Dice'：" + dice);
+        switch (dice) {
+            case 1 -> {
+                System.out.println("失敗！すべてのモンスターポイントが半分になる");
+                IntStream.range(0,user.monsters.length)
+                    .filter(index -> user.monsters[index] != -1)
+                    .forEach(index -> user.monstersPoint[index] = user.monstersPoint[index] / 2);
+            }
+            case 6 -> {
+                System.out.println("Critical！すべてのモンスターポイントが倍になる");
+                IntStream.range(0,user.monsters.length)
+                    .filter(index -> user.monsters[index] != -1)
+                    .forEach(index -> user.monstersPoint[index] = user.monstersPoint[index] * 2);
+            }
+            default -> user.bonusPoint = dice;
+        }
     }
 }
