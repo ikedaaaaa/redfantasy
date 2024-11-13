@@ -1,4 +1,3 @@
-import java.util.Arrays;
 public class Main {
     static RedFantasy rf = new RedFantasy();
 	public static void main(String[] args) {
@@ -19,15 +18,19 @@ public class Main {
 			}
 		}
 		System.out.println("Player History:");
-		Arrays.stream(rf.player.history)
-		.filter(value -> value != -9999)
-		.forEach(value -> System.out.print(value + "\t"));
+		// Arrays.stream(rf.player.history)
+		// .filter(value -> value != -9999)
+		// .forEach(value -> System.out.print(value + "\t"));
+		rf.player.history.stream()
+    		.filter(value -> value != -9999)
+    		.forEach(value -> System.out.print(value + "\t"));
+
 	
 
 		System.out.println("\nCPU History:");
-		Arrays.stream(rf.cpu.history)
-		.filter(value -> value != -9999)
-		.forEach(value -> System.out.print(value + "\t"));
+		rf.cpu.history.stream()
+			.filter(value -> value != -9999)
+			.forEach(value -> System.out.print(value + "\t"));
 		
 		System.out.println("");
 	}

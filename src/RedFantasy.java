@@ -48,7 +48,7 @@ public class RedFantasy {
         this.drawMonsters(cpuDrawSize, this.cpu);
     }
     private int getRandomMonsterDrawSize(Status user) {
-        return this.rnd.nextInt(user.monsters.length - MONSTER_DECK_OFFSET) + MIN_MONSTER_DRAW;
+        return this.rnd.nextInt(user.monsters.size() - MONSTER_DECK_OFFSET) + MIN_MONSTER_DRAW;
     }
 
     private void drawMonsters(int drawSize, Status user){
@@ -56,8 +56,9 @@ public class RedFantasy {
         IntStream.range(0,drawSize)
             .forEach(index -> {
                 int monsterNumber = this.rnd.nextInt(this.ms.monsters.size());
-                user.monsters[index] = monsterNumber;
-                user.monstersPoint[index] = this.ms.monsters.get(monsterNumber).monsterPoint;
+                user.monsters.set(index,monsterNumber);
+                // user.monstersPoint[index] = this.ms.monsters.get(monsterNumber).monsterPoint;
+                user.monstersPoint.set(index,this.ms.monsters.get(monsterNumber).monsterPoint);
             });
     }
     
@@ -71,9 +72,12 @@ public class RedFantasy {
 
     private void setMonsters(Status user){
         System.out.print(user.name + " Monsters List:");
-        IntStream.range(0,user.monsters.length)
-            .filter(index -> user.monsters[index] != -1)
-            .forEach(index ->  System.out.print(this.ms.monsters.get(user.monsters[index]).monsterName + " "));
+        // IntStream.range(0,user.monsters.size())
+        //     .filter(index -> user.monsters[index] != -1)
+        //     .forEach(index ->  System.out.print(this.ms.monsters.get(user.monsters[index]).monsterName + " "));
+        IntStream.range(0,user.monsters.size())
+            .filter(index -> user.monsters.get(index) != -1)
+            .forEach(index ->  System.out.print(this.ms.monsters.get(user.monsters.get(index)).monsterName + " "));
     }
 
     private int rollDice() {
@@ -104,15 +108,22 @@ public class RedFantasy {
         switch (dice) {
             case 1 -> {
                 System.out.println("失敗！すべてのモンスターポイントが半分になる");
-                IntStream.range(0,user.monsters.length)
-                    .filter(index -> user.monsters[index] != -1)
-                    .forEach(index -> user.monstersPoint[index] = user.monstersPoint[index] / 2);
+            //     IntStream.range(0,user.monsters.size())
+            //         .filter(index -> user.monsters[index] != -1)
+            //         .forEach(index -> user.monstersPoint[index] = user.monstersPoint[index] / 2);
+            // }
+                IntStream.range(0, user.monsters.size())
+                    .filter(index -> user.monsters.get(index) != -1)
+                    .forEach(index -> user.monstersPoint.set(index, user.monstersPoint.get(index) / 2));
             }
             case 6 -> {
                 System.out.println("Critical！すべてのモンスターポイントが倍になる");
-                IntStream.range(0,user.monsters.length)
-                    .filter(index -> user.monsters[index] != -1)
-                    .forEach(index -> user.monstersPoint[index] = user.monstersPoint[index] * 2);
+                // IntStream.range(0,user.monsters.size())
+                //     .filter(index -> user.monsters[index] != -1)
+                //     .forEach(index -> user.monstersPoint[index] = user.monstersPoint[index] * 2);
+                IntStream.range(0, user.monsters.size())
+                    .filter(index -> user.monsters.get(index) != -1)
+                    .forEach(index -> user.monstersPoint.set(index, user.monstersPoint.get(index) * 2));
             }
             default -> user.bonusPoint = dice;
         }
@@ -120,10 +131,15 @@ public class RedFantasy {
 
     private int monsterTotalPointCalculation(Status user){
         int monterTotalPoint = user.bonusPoint + 
-                IntStream.range(0, user.monsters.length)
-                    .filter(index -> user.monsters[index] != -1)
-                    .map(index -> user.monstersPoint[index])
-                    .sum();
+                // IntStream.range(0, user.monsters.size())
+                //     .filter(index -> user.monsters[index] != -1)
+                //     .map(index -> user.monstersPoint[index])
+                //     .sum();
+                IntStream.range(0, user.monsters.size())
+                        .filter(index -> user.monsters.get(index) != -1)
+                        .map(index -> user.monstersPoint.get(index))
+                        .sum();
+
         System.out.print(user.name + " Monster Pointの合計:");
         System.out.println(monterTotalPoint);
         return monterTotalPoint;
@@ -147,9 +163,13 @@ public class RedFantasy {
         this.writeHistory(this.cpu);
     }
     private void writeHistory(Status user){
-        IntStream.range(0, user.history.length)
-            .filter(index -> user.history[index] == -9999)
+        // IntStream.range(0, user.history.size())
+        //     .filter(index -> user.history[index] == -9999)
+        //     .findFirst()
+        //     .ifPresent(index -> user.history[index] = user.hp);
+        IntStream.range(0, user.history.size())
+            .filter(index -> user.history.get(index) == -9999)
             .findFirst()
-            .ifPresent(index -> user.history[index] = user.hp);
+            .ifPresent(index -> user.history.set(index, user.hp));
     }
 }
